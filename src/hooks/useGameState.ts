@@ -142,6 +142,7 @@ export const useGameState = () => {
       nextNodeIndex: 0,
       isAutoPlay: false,
     });
+    startGame();
   }, []);
 
   const removeNode = useCallback((nodeIndex: number) => {
