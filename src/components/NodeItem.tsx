@@ -74,7 +74,7 @@ export const NodeItem: FC<NodeItemProps> = ({
         {index + 1}
         {isClicked && (
           <div className="countdown-node">
-            {countdownTime < 0 ? 0 : countdownTime.toFixed(1)}
+            {countdownTime < 0 ? 0 : countdownTime.toFixed(1)}s
           </div>
         )}
       </div>
