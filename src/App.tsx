@@ -40,17 +40,18 @@ const NodeItem: FC<INodeItemProps> = ({
   const [countdownTimeNode, setCountdownTimeNode] = useState<number>(countdown);
   const intervalIdRef = useRef<number | undefined>(null);
 
-  const handleCountdown = () => {
+  const handleCountdown = useCallback(() => {
     setCountdownTimeNode((prev) => {
       if (prev <= 0) {
         onRemoveNode(index);
         if (intervalIdRef.current) {
           clearInterval(intervalIdRef.current);
         }
+        return 0;
       }
       return prev - 0.1;
     });
-  };
+  }, [index, onRemoveNode]);
 
   useEffect(() => {
     if (!isClicked || !isActive) return;
@@ -62,9 +63,10 @@ const NodeItem: FC<INodeItemProps> = ({
     return () => {
       if (intervalIdRef.current) {
         clearInterval(intervalIdRef.current);
+        intervalIdRef.current = undefined;
       }
     };
-  }, [index, isClicked]);
+  }, [isClicked, isActive]);
 
   if (!isActive) return null;
 
@@ -81,7 +83,9 @@ const NodeItem: FC<INodeItemProps> = ({
       <div>
         {index + 1}
         {isClicked && (
-          <div className="countdown-node">{countdownTimeNode.toFixed(1)}</div>
+          <div className="countdown-node">
+            {countdownTimeNode < 0 ? 0 : countdownTimeNode.toFixed(1)}
+          </div>
         )}
       </div>
     </div>
@@ -173,6 +177,11 @@ function App() {
 
   const onClickNodeItem = (index: number) => {
     // Check if the clicked node is the next expected node
+
+    const isNodeClicked = listNode[index]?.isClicked;
+
+    if (isNodeClicked) return;
+
     if (index !== nextNodeIndex) {
       setIsGameOver(true);
       clearInterval(intervalTotalGameTime.current);
@@ -193,9 +202,9 @@ function App() {
     setNextNodeIndex((prev) => prev + 1);
   };
 
-  const handleAutoPlayMode = () => {
+  const handleAutoPlayMode = useCallback(() => {
     onClickNodeItem(nextNodeIndex);
-  };
+  }, [nextNodeIndex]);
 
   const handleWinGame = () => {
     setIsWin(true);
@@ -227,14 +236,25 @@ function App() {
   }, [isPlayingGame]);
 
   useEffect(() => {
-    if (isAutoPlay && isPlayingGame) {
-      intervalAutoPlayMode.current = setInterval(() => {
-        handleAutoPlayMode();
-      }, DEFAULT_AUTO_PLAY_INTERVAL);
+    if (isAutoPlay && isPlayingGame && nextNodeIndex < (point || 0)) {
+      intervalAutoPlayMode.current = setInterval(
+        handleAutoPlayMode,
+        DEFAULT_AUTO_PLAY_INTERVAL
+      );
+    } else {
+      if (intervalAutoPlayMode.current) {
+        clearInterval(intervalAutoPlayMode.current);
+        intervalAutoPlayMode.current = undefined;
+      }
     }
 
-    return () => clearInterval(intervalAutoPlayMode.current);
-  }, [isAutoPlay, isPlayingGame]);
+    return () => {
+      if (intervalAutoPlayMode.current) {
+        clearInterval(intervalAutoPlayMode.current);
+        intervalAutoPlayMode.current = undefined;
+      }
+    };
+  }, [isAutoPlay, isPlayingGame, nextNodeIndex, point, handleAutoPlayMode]);
 
   useEffect(() => {
     if (!isPlayingGame) return;
