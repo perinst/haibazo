@@ -36,17 +36,6 @@ export const useGameState = () => {
 
       const newNextIndex = prev.nextNodeIndex + 1;
 
-      // Check if game is won
-      if (newNextIndex >= (prev.points || 0)) {
-        return {
-          ...prev,
-          gameState: GameState.WON,
-          nodes: [],
-          nextNodeIndex: newNextIndex,
-          isAutoPlay: false,
-        };
-      }
-
       return {
         ...prev,
         nodes: updatedNodes,
@@ -91,6 +80,23 @@ export const useGameState = () => {
     gameState.points,
     handleNodeClick,
   ]);
+
+  // Check if game is won
+  useEffect(() => {
+    if (gameState.nextNodeIndex < (gameState.points || 0)) return;
+
+    const allNodeCleared = gameState.nodes.every((node) => !node.isActive);
+
+    if (allNodeCleared) {
+      setGameState((prev) => ({
+        ...prev,
+        gameState: GameState.WON,
+        nodes: [],
+        nextNodeIndex: 0,
+        isAutoPlay: false,
+      }));
+    }
+  }, [gameState.points, gameState.nodes]);
 
   const generateNodes = useCallback(() => {
     const container = containerRef.current;
@@ -141,8 +147,8 @@ export const useGameState = () => {
   const removeNode = useCallback((nodeIndex: number) => {
     setGameState((prev) => ({
       ...prev,
-      nodes: prev.nodes.map((node, i) =>
-        i === nodeIndex ? { ...node, isActive: false } : node
+      nodes: prev.nodes.map((node, index) =>
+        index === nodeIndex ? { ...node, isActive: false } : node
       ),
     }));
   }, []);
