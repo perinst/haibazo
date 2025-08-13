@@ -25,6 +25,25 @@
    ============================================================================= */
 .points-wrapper {
   margin-bottom: 1rem;
+  display      : flex;
+  align-items  : center;
+}
+
+.timer-label {
+  margin-right: 2em;
+}
+
+.timer-value {
+  font-weight: bold;
+  color      : #3b91a8;
+  font-size  : 1.2em;
+}
+
+
+.timer-wrapper {
+  margin-bottom: 1rem;
+  display      : flex;
+  align-items  : center;
 }
 
 .input-points {
@@ -41,6 +60,10 @@
   align-items    : center;
   justify-content: center;
   gap            : 0.5rem;
+}
+
+.points-label {
+  margin-right: 2em;
 }
 
 .wrapper-buttons {

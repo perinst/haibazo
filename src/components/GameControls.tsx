@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { Fragment, type FC } from "react";
 
 interface GameControlsProps {
   isPlaying: boolean;
@@ -29,9 +29,9 @@ export const GameControls: FC<GameControlsProps> = ({
   };
 
   return (
-    <>
+    <Fragment>
       <div className="points-wrapper">
-        <div>Points</div>
+        <div className="points-label">Points: </div>
         <input
           className="input-points"
           type="number"
@@ -41,9 +41,9 @@ export const GameControls: FC<GameControlsProps> = ({
         />
       </div>
 
-      <div className="points-input">
-        <div>Times</div>
-        <div>{totalGameTime.toFixed(1)} s</div>
+      <div className="timer-wrapper">
+        <div className="timer-label">Times: </div>
+        <div className="timer-value">{totalGameTime.toFixed(1)} s</div>
       </div>
 
       <div className="wrapper-buttons">
@@ -60,6 +60,6 @@ export const GameControls: FC<GameControlsProps> = ({
       {isPlaying && nextNodeIndex + 1 <= (points || 0) && (
         <div>Next: {nextNodeIndex + 1}</div>
       )}
-    </>
+    </Fragment>
   );
 };
