@@ -57,7 +57,9 @@ export const GameControls: FC<GameControlsProps> = ({
         )}
       </div>
 
-      {isPlaying && <div>Next: {nextNodeIndex + 1}</div>}
+      {isPlaying && nextNodeIndex + 1 <= (points || 0) && (
+        <div>Next: {nextNodeIndex + 1}</div>
+      )}
     </>
   );
 };
