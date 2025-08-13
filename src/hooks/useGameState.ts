@@ -137,13 +137,13 @@ export const useGameState = () => {
     setGameState({
       totalGameTime: 0,
       gameState: GameState.IDLE,
-      points: GAME_CONFIG.DEFAULT_POINTS,
+      points: gameState.points || GAME_CONFIG.DEFAULT_POINTS,
       nodes: [],
       nextNodeIndex: 0,
       isAutoPlay: false,
     });
     startGame();
-  }, []);
+  }, [gameState.points]);
 
   const removeNode = useCallback((nodeIndex: number) => {
     setGameState((prev) => ({
